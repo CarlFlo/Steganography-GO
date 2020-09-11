@@ -57,13 +57,16 @@ func run() error {
 		return errors.New("You have chosen to encrypt but haven't provided a message to be encrypted")
 	}
 
+	// "Validate" password
+	flagPassword = steganography.KeySanitizing(flagPassword)
+
 	var result string
 	var err error
 
 	if len(flagEncryptFilepath) != 0 { // If true then encrypt
-		result, err = encrypt(flagEncryptFilepath, flagMessage)
+		result, err = encrypt(flagEncryptFilepath, flagMessage, flagPassword)
 	} else if len(flagDecryptFilepath) != 0 { // If true then decrypt
-		result, err = decrypt(flagDecryptFilepath)
+		result, err = decrypt(flagDecryptFilepath, flagPassword)
 	}
 
 	if err == nil {
@@ -79,12 +82,13 @@ func run() error {
 	input:
 		fName string : The filename of the image
 		message string : The message to be hidden in the image
+		password string : The password to encrypt the data
 
 	output:
 		string : The output
 		error : Error if there is an error
 */
-func encrypt(fName, message string) (string, error) {
+func encrypt(fName, message, password string) (string, error) {
 
 	// Loads png image
 	data, err := steganography.LoadImage(fmt.Sprintf("%s", fName))
@@ -93,7 +97,7 @@ func encrypt(fName, message string) (string, error) {
 	}
 
 	// Performs steganography
-	if err = steganography.EncodeString(message, data, fmt.Sprintf("%s_changed", fName)); err != nil {
+	if err = steganography.EncodeString(message, data, fmt.Sprintf("%s_changed", fName), password); err != nil {
 		return "", err
 	}
 
@@ -105,12 +109,13 @@ func encrypt(fName, message string) (string, error) {
 
 	input:
 		fName string : The filename of the png image
+		password string : The password to decrypt the data
 
 	output:
 		string : The extracted message
 		error : Error if there is an error
 */
-func decrypt(fName string) (string, error) {
+func decrypt(fName, password string) (string, error) {
 
 	// Loads png image
 	data, err := steganography.LoadImage(fmt.Sprintf("%s", fName))
@@ -119,16 +124,9 @@ func decrypt(fName string) (string, error) {
 	}
 
 	// Performs steganography
-	result, err := steganography.Decode(data)
+	result, err := steganography.Decode(data, password)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("The decoded message is: '%s'", result), nil
-}
-
-// Test preforms a test
-// This is true
-func Test() error {
-
-	return nil
 }

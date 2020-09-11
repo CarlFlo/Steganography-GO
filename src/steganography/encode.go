@@ -20,9 +20,9 @@ import (
 	output:
 		error : If there was an error
 */
-func EncodeString(message string, img image.Image, outFile string) error {
+func EncodeString(message string, img image.Image, outFile, password string) error {
 	data := stringToBinary(message)
-	return Encode(data, img, outFile)
+	return Encode(data, img, outFile, password)
 }
 
 /*
@@ -36,7 +36,14 @@ func EncodeString(message string, img image.Image, outFile string) error {
 	output:
 		error : If there was an error
 */
-func Encode(data []byte, img image.Image, outFile string) error {
+func Encode(data []byte, img image.Image, outFile, password string) error {
+
+	/*
+		// Encrypt message here
+		if err := Encrypt(password, &data); err != nil {
+			return err
+		}
+	*/
 
 	addDataLengthToData(&data)
 	// The first 32 bits of the binary data contains the length

@@ -12,10 +12,10 @@ import (
 /*
 	Decode decodes the hidden message inside the image
 
-	import:
+	input:
 		img image.Image : The image with the secret message
 */
-func Decode(img image.Image) (string, error) {
+func Decode(img image.Image, password string) (string, error) {
 
 	// Holds the message
 	var buffer bytes.Buffer
@@ -62,6 +62,13 @@ func Decode(img image.Image) (string, error) {
 	// Takes the result, removes all access information by 'substringing' it away.
 	// The buffer holds the values 48(0) and 49(1). binaryStringToByteArray converts the values to the numbers
 	decodedResult := binaryStringToByteArray(buffer.String()[32:iterateTo])
+
+	/*
+		// Decrypt with the password
+		if err := Decrypt(password, &decodedResult); err != nil {
+			return "", err
+		}
+	*/
 
 	// This converts the []byte with the binary data to a string with the message
 	result := toString(prettyPrint(decodedResult))
