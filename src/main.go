@@ -11,6 +11,7 @@ import (
 )
 
 var flagMessage string
+var flagPassword string
 var flagEncryptFilepath string
 var flagDecryptFilepath string
 
@@ -18,6 +19,7 @@ func init() {
 
 	flag.StringVar(&flagEncryptFilepath, "e", "", "Encrypt file. The path to the image that will have a message encrypted in it (jpg, jpeg, png & gif is supported)")
 	flag.StringVar(&flagDecryptFilepath, "d", "", "Decrypt file. The path to the png image that will have a message decrypted from it")
+	flag.StringVar(&flagPassword, "p", "", "Password. The message will be encoded using this password and will be required to 'unlock' the message again (optional) (Not implemented)")
 	flag.StringVar(&flagMessage, "m", "", "Message: the text to be encrypted here surrounded by quotes")
 
 	flag.Parse()
