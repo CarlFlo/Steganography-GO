@@ -5,7 +5,7 @@ My steganography implementation in Golang
 
 ### Encode a message
 ```
-Steganography-GO.exe -e filename.jpg -m "Example message that will be encoded in the image"
+Steganography-GO.exe -e filename.jpg -m "Example message"
 ```
 
 ### Decode a message
