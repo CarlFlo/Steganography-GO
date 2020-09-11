@@ -10,25 +10,15 @@ import (
 	"./steganography"
 )
 
-var flagEncrypt bool
-var flagDecrypt bool
 var flagMessage string
-var flagFilepath string
+var flagEncryptFilepath string
+var flagDecryptFilepath string
 
 func init() {
-	flag.BoolVar(&flagEncrypt, "e", false, "Encrypt flag. Set if you want to encrypt")
-	flag.BoolVar(&flagDecrypt, "d", false, "Decrypt flag. Set if you want to decrypt")
-	flag.StringVar(&flagMessage, "m", "", "Message: the text to be encrypted here surrounded by quotes")
-	flag.StringVar(&flagFilepath, "f", "", "File: the path to the image (jpg, jpeg, png & gif is supported)") // jpg == jpeg
 
-	flag.Visit(func(f *flag.Flag) {
-		switch f.Name {
-		case "e":
-			flagEncrypt = true
-		case "d":
-			flagDecrypt = true
-		}
-	})
+	flag.StringVar(&flagEncryptFilepath, "e", "", "Encrypt file. The path to the image that will have a message encrypted in it (jpg, jpeg, png & gif is supported)")
+	flag.StringVar(&flagDecryptFilepath, "d", "", "Decrypt file. The path to the png image that will have a message decrypted from it")
+	flag.StringVar(&flagMessage, "m", "", "Message: the text to be encrypted here surrounded by quotes")
 
 	flag.Parse()
 }
@@ -38,7 +28,6 @@ func main() {
 	if err := run(); err != nil {
 		panic(err.Error())
 	}
-
 }
 
 /*
@@ -58,23 +47,21 @@ func run() error {
 		fmt.Println("Press the Enter Key to continue...")
 		fmt.Scanln() // wait for Enter Key
 		return errors.New("You cannot launch the program without providing any arguments")
-	} else if flagEncrypt && flagDecrypt {
-		return errors.New("Both encrypt and decrypt flag cannot be set")
-	} else if !flagEncrypt && !flagDecrypt {
-		return errors.New("Both encrypt and decrypt flag aren't set")
-	} else if len(flagFilepath) == 0 {
-		return errors.New("A filepath needs to be provided")
-	} else if flagEncrypt && len(flagMessage) == 0 {
-		return errors.New("You have chosen to encrypt but havent provided a message to be encrypted")
+	} else if len(flagEncryptFilepath) != 0 && len(flagDecryptFilepath) != 0 {
+		return errors.New("You cannot both encrypt and decrypt at the same time")
+	} else if len(flagEncryptFilepath) == 0 && len(flagDecryptFilepath) == 0 {
+		return errors.New("A filepath needs to be provided for either decryption or encryption")
+	} else if len(flagEncryptFilepath) != 0 && len(flagMessage) == 0 {
+		return errors.New("You have chosen to encrypt but haven't provided a message to be encrypted")
 	}
 
 	var result string
 	var err error
 
-	if flagEncrypt { // If true then encrypt
-		result, err = encrypt(flagFilepath, flagMessage)
-	} else if flagDecrypt { // If true then decrypt
-		result, err = decrypt(flagFilepath)
+	if len(flagEncryptFilepath) != 0 { // If true then encrypt
+		result, err = encrypt(flagEncryptFilepath, flagMessage)
+	} else if len(flagDecryptFilepath) != 0 { // If true then decrypt
+		result, err = decrypt(flagDecryptFilepath)
 	}
 
 	if err == nil {
