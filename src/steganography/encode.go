@@ -56,26 +56,14 @@ func Encode(data []byte, img image.Image, outFile string) error {
 		row := (i / colL) % rowL
 		col := i % colL
 
-		r, g, b, a := getRGBA(newImg.At(row, col))
-
-		rgbaArray := []uint8{r, g, b, a}
+		rgbaArray := getRGBAArray(newImg.At(row, col))
 
 		for j := i; j < i+3 && j < len(data); j++ {
 			setLSB(&rgbaArray[j-i], data[j]&1 == 1)
 		}
-		/* // Old implementation
-		// Check if the least significant bit needs to be changed
-		setLSB(&r, data[i]&1 == 1)
-		if i+1 < len(data) { // Check for out of bounds. We do 3 increments at a time so we have to
-			setLSB(&g, data[i+1]&1 == 1)
-		}
-		if i+2 < len(data) { // Check for out of bounds
-			setLSB(&b, data[i+2]&1 == 1)
-		}
-		*/
+
 		// Inserts the new color into the pixel
 		newImg.Set(row, col, color.RGBA{rgbaArray[0], rgbaArray[1], rgbaArray[2], rgbaArray[3]})
-		//newImg.Set(row, col, color.RGBA{r, g, b, a})
 	}
 
 	// Removes extension

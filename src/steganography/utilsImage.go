@@ -49,6 +49,21 @@ func getRGBA(c color.Color) (uint8, uint8, uint8, uint8) {
 }
 
 /*
+	Wrapper function for getRGBA that returns the values in an array
+
+	input:
+		c color.Color : The color to be converted
+
+	output:
+		The four RGB uint8 values in an uint8 array
+*/
+func getRGBAArray(c color.Color) []uint8 {
+
+	r, g, b, a := getRGBA(c)
+	return []uint8{r, g, b, a}
+}
+
+/*
 	checkAvaiableSize checks so that the provided image can contain the message
 
 	input:
