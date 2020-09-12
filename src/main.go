@@ -57,7 +57,7 @@ func run() error {
 		return errors.New("You have chosen to encrypt but haven't provided a message to be encrypted")
 	}
 
-	// "Validate" password
+	// Makes sure that the password is a valid length: 32>password>16
 	flagPassword = steganography.KeySanitizing(flagPassword)
 
 	var result string
