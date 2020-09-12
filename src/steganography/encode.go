@@ -58,34 +58,31 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 		close(ch)
 	}(ch, &data)
 
-	i := 0
-	for bitSet := range ch {
-		row := (i / colL) % rowL
-		col := i % colL
+	exitFlag := false
+	for row := 0; row < rowL; row++ {
+		for col := 0; col < colL; col++ {
 
-		// Gets the pixel
-		rgbaArray := getRGBAArray(newImg.At(row, col))
+			rgbaArray := getRGBAArray(newImg.At(row, col))
 
-		/* */
+			for i := 0; i < 3; i++ {
+				/* Apply change here */
+				bitSet, ok := <-ch
+				if !ok {
+					exitFlag = true
+					break
 
-		newImg.Set(row, col, color.RGBA{rgbaArray[0], rgbaArray[1], rgbaArray[2], rgbaArray[3]})
-		i++
-	}
-
-	// Iterate over rows and cols, increment by 3 because each pixel can hold 3 "values"
-	for i := 0; i < len(data); i += 3 {
-		row := (i / colL) % rowL
-		col := i % colL
-
-		rgbaArray := getRGBAArray(newImg.At(row, col))
-
-		for j := i; j < i+3 && j < len(data); j++ {
-			setLSB(&rgbaArray[j-i], data[j]&1 == 1)
+				}
+				setLSB(&rgbaArray[i], bitSet)
+			}
+			newImg.Set(row, col, color.RGBA{rgbaArray[0], rgbaArray[1], rgbaArray[2], rgbaArray[3]})
+			if exitFlag {
+				goto Finished
+			}
 		}
-
-		// Inserts the new color into the pixel
-		newImg.Set(row, col, color.RGBA{rgbaArray[0], rgbaArray[1], rgbaArray[2], rgbaArray[3]})
 	}
+
+	// No more data to encode in the image
+Finished:
 
 	// Removes extension
 	outFile = outFile[:len(outFile)-len(filepath.Ext(outFile))]
