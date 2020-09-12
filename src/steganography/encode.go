@@ -67,8 +67,8 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 	/* Message encoding is broken, check how the lsb is set */
 
 	exitFlag := false
-	for row := 0; row < rowL; row++ {
-		for col := 0; col < colL; col++ {
+	for col := 0; col < colL; col++ {
+		for row := 0; row < rowL; row++ {
 
 			rgbaArray := getRGBAArray(newImg.At(row, col))
 
@@ -93,7 +93,7 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 	// No more data to encode in the image
 Finished:
 
-	fmt.Println(buffer.String())
+	fmt.Println(buffer.String()[:32], "-", buffer.String()[32:])
 
 	// Removes extension
 	outFile = outFile[:len(outFile)-len(filepath.Ext(outFile))]
