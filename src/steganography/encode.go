@@ -10,22 +10,6 @@ import (
 )
 
 /*
-	EncodeString is a wrapper function for Encode, that handles strings
-
-	input:
-		message string: The binary []byte data to be encoded
-		img image.Image : The image to have the message encoded inside it
-		outFile string : The name of the file that will be created with the encoded message
-
-	output:
-		error : If there was an error
-*/
-func EncodeString(message string, img image.Image, outFile, password string) error {
-	data := stringToBinary(message)
-	return Encode(data, img, outFile, password)
-}
-
-/*
 	Encode will take data to be encrypted into the provided image
 
 	input:
@@ -37,6 +21,8 @@ func EncodeString(message string, img image.Image, outFile, password string) err
 		error : If there was an error
 */
 func Encode(data []byte, img image.Image, outFile, password string) error {
+
+	// Convert data bytes to 0 and 1
 
 	/*
 		// Encrypt message here

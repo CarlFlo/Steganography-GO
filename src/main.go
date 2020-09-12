@@ -97,7 +97,7 @@ func encrypt(fName, message, password string) (string, error) {
 	}
 
 	// Performs steganography
-	if err = steganography.EncodeString(message, data, fmt.Sprintf("%s_changed", fName), password); err != nil {
+	if err = steganography.Encode([]byte(message), data, fmt.Sprintf("%s_changed", fName), password); err != nil {
 		return "", err
 	}
 
