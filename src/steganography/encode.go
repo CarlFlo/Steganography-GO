@@ -80,9 +80,8 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 					break
 				}
 				setLSB(&rgbaArray[i], bitSet)
+				buffer.WriteString(fmt.Sprintf("%v", rgbaArray[i]&1))
 			}
-
-			buffer.WriteString(fmt.Sprintf("%v%v%v", rgbaArray[0]&1, rgbaArray[1]&1, rgbaArray[2]&1))
 
 			newImg.Set(row, col, color.RGBA{rgbaArray[0], rgbaArray[1], rgbaArray[2], rgbaArray[3]})
 			if exitFlag {
