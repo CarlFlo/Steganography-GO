@@ -77,11 +77,13 @@ func checkAvaiableSize(message *[]byte, img image.Image) error {
 
 	// Multiply by 3 because each pixel has 3 values (RGB)
 	// Where 1 bit can be encoded in their respective 3 RGB values in the LSB
-	maxSize := img.Bounds().Max.Y * img.Bounds().Max.X * 3
+	maxSize := img.Bounds().Max.Y * img.Bounds().Max.X * 3 * 1
+
+	neededSize := len(*message) * 8
 
 	// Check if the image is big enough for the message
-	if len(*message) > maxSize {
-		errMsg := fmt.Sprintf("The image is not big enough to encrypt the message. Avaiable: %v, Needed: %v, diff: %v", maxSize, len(*message), len(*message)-maxSize)
+	if neededSize > maxSize {
+		errMsg := fmt.Sprintf("The image is not big enough to encrypt the message. Avaiable: %v, Needed: %v, diff: %v", maxSize, neededSize, neededSize-maxSize)
 		return errors.New(errMsg)
 	}
 	return nil

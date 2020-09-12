@@ -9,8 +9,24 @@ package steganography
 */
 func addDataLengthToData(data *[]byte) {
 
-	length := intToUint32Binary(len(*data))
-	*data = append(length, *data...)
+	//length := intToUint32Binary(len(*data))
+
+	byteLength := make([]byte, 4)
+	length := uint32(len(*data))
+
+	for i := 0; i < len(byteLength); i++ {
+		for j := 0; j < 8; j++ {
+			shift := 8*i + j
+			res := length & (0x80000000 >> shift)
+			if res > 0 {
+				res = 1
+			}
+
+			byteLength[i] |= byte(res) << (7 - j)
+		}
+	}
+
+	*data = append(byteLength, *data...)
 }
 
 /*

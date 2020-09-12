@@ -22,18 +22,13 @@ import (
 */
 func Encode(data []byte, img image.Image, outFile, password string) error {
 
-	// Convert data bytes to 0 and 1
+	// Encrypts the message
+	if err := Encrypt(password, &data); err != nil {
+		return err
+	}
 
-	/*
-		// Encrypt message here
-		if err := Encrypt(password, &data); err != nil {
-			return err
-		}
-	*/
-
+	// Concats 4 bytes to the message containing the length of the message
 	addDataLengthToData(&data)
-	// The first 32 bits of the binary data contains the length
-	// The rest is the binary data
 
 	if err := checkAvaiableSize(&data, img); err != nil {
 		return err
@@ -43,6 +38,39 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 
 	rowL := newImg.Bounds().Max.Y
 	colL := newImg.Bounds().Max.X
+
+	// Content in data is byte and not binary data
+	// Rework this function
+
+	ch := make(chan bool)
+
+	go func(ch chan bool, data *[]byte) {
+		for _, _byte := range *data {
+			for i := 0; i < 8; i++ {
+				result := _byte & (0x80 >> i)
+				if result > 0 {
+					ch <- true
+				} else {
+					ch <- false
+				}
+			}
+		}
+		close(ch)
+	}(ch, &data)
+
+	i := 0
+	for bitSet := range ch {
+		row := (i / colL) % rowL
+		col := i % colL
+
+		// Gets the pixel
+		rgbaArray := getRGBAArray(newImg.At(row, col))
+
+		/* */
+
+		newImg.Set(row, col, color.RGBA{rgbaArray[0], rgbaArray[1], rgbaArray[2], rgbaArray[3]})
+		i++
+	}
 
 	// Iterate over rows and cols, increment by 3 because each pixel can hold 3 "values"
 	for i := 0; i < len(data); i += 3 {
