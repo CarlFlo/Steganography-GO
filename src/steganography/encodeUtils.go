@@ -12,7 +12,7 @@ func addDataLengthToData(data *[]byte) {
 	//length := intToUint32Binary(len(*data))
 
 	byteLength := make([]byte, 4)
-	length := uint32(len(*data))
+	length := uint32(len(*data) * 8)
 
 	for i := 0; i < len(byteLength); i++ {
 		for j := 0; j < 8; j++ {

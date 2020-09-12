@@ -66,6 +66,9 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 
 	/* Message encoding is broken, check how the lsb is set */
 
+	/* The encoded data is the same compared to the 'old' version,
+	but the method of encoding is not working */
+
 	/* Encoding is down each column and then it goes down to the bottom. I know weird from code setup*/
 
 	exitFlag := false
