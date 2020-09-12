@@ -33,8 +33,12 @@ func Decode(img image.Image, password string) (string, error) {
 
 		r, g, b, _ := getRGBA(img.At(row, col))
 
-		// Saves the binary (1 & 0) data in the buffer
+		// Saves the binary (1 or 0) data in the buffer
 		buffer.WriteString(fmt.Sprintf("%v%v%v", r&1, g&1, b&1))
+
+		if i < 32 {
+			fmt.Printf("%v%v%v", r&1, g&1, b&1)
+		}
 
 		// Checks if we have found the size of the message
 		if !hasLength && len(buffer.Bytes()) >= 32 {

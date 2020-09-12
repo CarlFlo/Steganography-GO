@@ -1,6 +1,7 @@
 package steganography
 
 import (
+	"bytes"
 	"fmt"
 	"image"
 	"image/color"
@@ -58,6 +59,8 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 		close(ch)
 	}(ch, &data)
 
+	var buffer bytes.Buffer
+
 	exitFlag := false
 	for row := 0; row < rowL; row++ {
 		for col := 0; col < colL; col++ {
@@ -70,10 +73,12 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 				if !ok {
 					exitFlag = true
 					break
-
 				}
 				setLSB(&rgbaArray[i], bitSet)
 			}
+
+			buffer.WriteString(fmt.Sprintf("%v%v%v", rgbaArray[0]&1, rgbaArray[1]&1, rgbaArray[2]&1))
+
 			newImg.Set(row, col, color.RGBA{rgbaArray[0], rgbaArray[1], rgbaArray[2], rgbaArray[3]})
 			if exitFlag {
 				goto Finished
@@ -83,6 +88,8 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 
 	// No more data to encode in the image
 Finished:
+
+	fmt.Println(buffer.String())
 
 	// Removes extension
 	outFile = outFile[:len(outFile)-len(filepath.Ext(outFile))]
