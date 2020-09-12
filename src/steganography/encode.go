@@ -24,9 +24,12 @@ import (
 func Encode(data []byte, img image.Image, outFile, password string) error {
 
 	// Encrypts the message
-	if err := Encrypt(password, &data); err != nil {
-		return err
-	}
+
+	/*
+		if err := Encrypt(password, &data); err != nil {
+			return err
+		}
+	*/
 
 	// Concats 4 bytes to the message containing the length of the message
 	addDataLengthToData(&data)
@@ -60,6 +63,8 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 	}(ch, &data)
 
 	var buffer bytes.Buffer
+
+	/* Message encoding is broken, check how the lsb is set */
 
 	exitFlag := false
 	for row := 0; row < rowL; row++ {

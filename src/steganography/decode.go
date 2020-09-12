@@ -36,10 +36,6 @@ func Decode(img image.Image, password string) (string, error) {
 		// Saves the binary (1 or 0) data in the buffer
 		buffer.WriteString(fmt.Sprintf("%v%v%v", r&1, g&1, b&1))
 
-		if i < 32 {
-			fmt.Printf("%v%v%v", r&1, g&1, b&1)
-		}
-
 		// Checks if we have found the size of the message
 		if !hasLength && len(buffer.Bytes()) >= 32 {
 			hasLength = true
@@ -51,6 +47,8 @@ func Decode(img image.Image, password string) (string, error) {
 
 				// Update how long we need to iterate
 				iterateTo = newSize + 32
+
+				fmt.Println("Found length", iterateTo-32)
 
 				// This check checks if the image could have something encrypted in it
 				// If 'newSize' is larger than maxSize then we throw an error
@@ -69,11 +67,11 @@ func Decode(img image.Image, password string) (string, error) {
 
 	/*
 		// Decrypt with the password
-		if err := Decrypt(password, &decodedResult); err != nil {
+		if err := Decrypt(password, &asd); err != nil {
 			return "", err
 		}
-	*/
 
+	*/
 	// This converts the []byte with the binary data to a string with the message
 	result := toString(prettyPrint(decodedResult))
 
