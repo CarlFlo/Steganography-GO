@@ -66,9 +66,11 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 
 	/* Message encoding is broken, check how the lsb is set */
 
+	/* Encoding is down each column and then it goes down to the bottom. I know weird from code setup*/
+
 	exitFlag := false
-	for col := 0; col < colL; col++ {
-		for row := 0; row < rowL; row++ {
+	for row := 0; row < rowL; row++ {
+		for col := 0; col < colL; col++ {
 
 			rgbaArray := getRGBAArray(newImg.At(row, col))
 
