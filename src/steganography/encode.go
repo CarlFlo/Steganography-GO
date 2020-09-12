@@ -79,6 +79,17 @@ func Encode(data []byte, img image.Image, outFile, password string) error {
 
 			for i := 0; i < 3; i++ {
 				/* Apply change here */
+
+				/*
+					if bitSet, ok := <-ch; !ok {
+						exitFlag = true
+						break
+					} else {
+						setLSB(&rgbaArray[i], bitSet)
+						buffer.WriteString(fmt.Sprintf("%v", rgbaArray[i]&1))
+					}
+				*/
+
 				bitSet, ok := <-ch
 				if !ok {
 					exitFlag = true
